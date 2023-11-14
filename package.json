@@ -1,0 +1,29 @@
+{
+  "name": "node-js-server",
+  "version": "1.0.0",
+  "description": "A NodeJS server",
+  "main": "index.js",
+  "author": "Fabio Ansaldi",
+  "license": "MIT",
+  "bin": {
+    "node-js-server": "./bin/node-js-server"
+  },
+  "scripts": {
+    "build:prod": "concurrently \"yarn tsc\" \"yarn run copy:template\"",
+    "build:dev": "yarn tsc --watch",
+    "copy:template": "node node_modules/cpy-cli/cli.js 'src/template/*.html' dist/template",
+    "start": "node bin/node-js-server",
+    "server": "SERVER_PORT=4321 SERVER_SOURCE=test SERVER_INDEX=index.html SERVER_VERBOSE=true nodemon -q dist/server.js",
+    "dev": "concurrently \"yarn run build:dev\" \"yarn run copy:template\" \"yarn wait-on dist/server.js && yarn run server\""
+  },
+  "devDependencies": {
+    "@types/node": "^20.8.10",
+    "commander": "^11.1.0",
+    "concurrently": "^8.2.2",
+    "cpy-cli": "^5.0.0",
+    "jsdom": "^22.1.0",
+    "nodemon": "^3.0.1",
+    "typescript": "^5.2.2",
+    "wait-on": "^7.1.0"
+  }
+}

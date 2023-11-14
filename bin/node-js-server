@@ -1,0 +1,59 @@
+#!/usr/bin/env node
+const { program } = require('commander')
+const { spawn } = require('child_process')
+
+const packageJSON = require('../package.json')
+
+const ADDRESS = '127.0.0.1'
+const INDEX = ''
+const PORT = '4321'
+const SOURCE = ''
+
+program
+  .name(packageJSON.name)
+  .description(packageJSON.description)
+  .version(packageJSON.version)
+  .usage('<option> <value>')
+  .option('-a, --address <value>', 'address', ADDRESS)
+  .option('-i, --index <value>', 'index', INDEX)
+  .option('-p, --port <value>', 'port', PORT)
+  .option('-s, --source <value>', 'source', SOURCE)
+  .option('-v, --verbose', 'verbose', false) /* (default value: false) */
+
+  .on('--help', () => {
+    const examples = [
+      `-a ${ADDRESS} \t\t# runs server at address ${ADDRESS}`,
+      `-i index.html \t\t# set 'index.html' as default visited page`,
+      `-p ${PORT} \t\t# runs server at port ${PORT}`,
+      `-s 'my_folder' \t# serves assets at 'my_folder folder`,
+      '-v \t\t\t# gives extra log information during process']
+    console.log('\nExample usages:\n')
+    examples.forEach(example => console.log(`\t$ node-js-server ${example}`))
+    console.log('\n')
+  })
+
+program.parse()
+const options = program.opts()
+
+if (options.address && options.port) {
+  if (options.verbose) {
+    console.info(`\Server addres was set to ${options.address}`)
+    console.info(`\Server port was set to ${options.port}`)
+    console.info(`\Server source was set to ${options.source}`)
+    console.info(`\Server index was set to ${options.index}`)
+  }
+
+  const server = spawn('node', ['./dist/server.js'], { env: { ...process.env, SERVER_PORT: options.port, SERVER_ADDRESS: options.address, SERVER_SOURCE: options.source, SERVER_VERBOSE: options.verbose, SERVER_INDEX: options.index } })
+
+  server.stdout.on('data', function(data) {
+      console.log(data.toString());
+    })
+  server.stderr.on('data', function(data) {
+    console.log(data.toString());
+  })
+  server.on('exit', function(code) {
+    console.log('child process exited with code ' + code.toString());
+  })
+} else {
+  console.log('\Missing params given to NodeJS Server:\n')
+}
