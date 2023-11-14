@@ -1,8 +1,8 @@
 {
-  "name": "node-js-server",
+  "name": "@u0_a103/node-js-server",
   "version": "1.0.0",
   "description": "A NodeJS server",
-  "main": "index.js",
+  "main": "dist/server.js",
   "author": "Fabio Ansaldi",
   "license": "MIT",
   "bin": {
@@ -16,6 +16,16 @@
     "server": "SERVER_PORT=4321 SERVER_SOURCE=test SERVER_INDEX=index.html SERVER_VERBOSE=true nodemon -q dist/server.js",
     "dev": "concurrently \"yarn run build:dev\" \"yarn run copy:template\" \"yarn wait-on dist/server.js && yarn run server\""
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/FabioAnsaldi/node-js-server.git"
+  },
+  "keywords": [
+    "Node",
+    "Server",
+    "Web"
+  ],
+  "homepage": "https://github.com/FabioAnsaldi/node-js-server#readme",
   "devDependencies": {
     "@types/node": "^20.8.10",
     "commander": "^11.1.0",
