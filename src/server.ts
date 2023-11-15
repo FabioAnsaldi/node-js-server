@@ -24,7 +24,11 @@ interface Response {
 }
 
 const server = http.createServer((req: HtmlRRequest, res: HtmlRespone) => {
-  let filePath = lib.buildPath('.', source, req.url, index)
+  let fileName = ''
+  if (req.url === '/') {
+      fileName = index
+  }
+  let filePath = lib.buildPath('.', source, req.url, fileName)
   if (verbose) {
     console.info(`\Searching filePath: ${filePath}`)
   }

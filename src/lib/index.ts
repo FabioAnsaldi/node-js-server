@@ -98,7 +98,7 @@ interface FilePath {
   base: string
 }
 
-const getContentFile = (file: FilePath, stopIt: Boolean = false, files: string[] = []): Response => {
+const getContentFile = (file: FilePath, files: string[] = []): Response => {
   const readFile = util.promisify(fs.readFile)
   const extname = path.extname(file.path)
   const contentType = getContentType(extname)
@@ -129,14 +129,14 @@ const getContentFile = (file: FilePath, stopIt: Boolean = false, files: string[]
       try {
         let filesInFolder: string[] = []
         let content = ''
-        if (e.code === 'ENOENT' && stopIt === false) {
+        if (e.code === 'ENOENT') {
           const html = path.join(__dirname, '..', '/template/404.html')
-          return getContentFile({ path: html, base: file.base }, true)
+          return getContentFile({ path: html, base: file.base })
         }
         if (e.code === 'EISDIR') {
           const html = path.join(__dirname, '..', '/template/root.html')
           filesInFolder = getFiles(file.path)
-          return getContentFile({ path: html, base: file.base }, false, filesInFolder)
+          return getContentFile({ path: html, base: file.base }, filesInFolder)
         }
         return new Promise((resolve, reject) => {
           if (e.error) {
