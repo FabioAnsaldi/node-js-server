@@ -1,6 +1,6 @@
 {
   "name": "@u0_a103/node-js-server",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "A NodeJS server",
   "main": "dist/server.js",
   "author": "Fabio Ansaldi",
@@ -30,12 +30,12 @@
     "@types/node": "^20.8.10",
     "concurrently": "^8.2.2",
     "cpy-cli": "^5.0.0",
-    "jsdom": "^22.1.0",
     "nodemon": "^3.0.1",
     "typescript": "^5.2.2",
     "wait-on": "^7.1.0"
   },
   "dependencies": {
-    "commander": "^11.1.0"
+    "commander": "^11.1.0",
+    "jsdom": "^22.1.0"
   }
 }
