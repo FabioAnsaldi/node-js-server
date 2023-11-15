@@ -130,11 +130,13 @@ const getContentFile = (file: FilePath, stopIt: Boolean = false, files: string[]
         let filesInFolder: string[] = []
         let content = ''
         if (e.code === 'ENOENT' && stopIt === false) {
-          return getContentFile({ path: 'dist/template/404.html', base: file.base }, true)
+          const html = path.join(__dirname, '..', '/template/404.html')
+          return getContentFile({ path: html, base: file.base }, true)
         }
         if (e.code === 'EISDIR') {
+          const html = path.join(__dirname, '..', '/template/root.html')
           filesInFolder = getFiles(file.path)
-          return getContentFile({ path: 'dist/template/root.html', base: file.base }, false, filesInFolder)
+          return getContentFile({ path: html, base: file.base }, false, filesInFolder)
         }
         return new Promise((resolve, reject) => {
           if (e.error) {
