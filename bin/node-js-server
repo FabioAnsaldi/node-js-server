@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 const { program } = require('commander')
 const { spawn } = require('child_process')
+const path = require('path')
 
 const packageJSON = require('../package.json')
 
@@ -42,17 +43,17 @@ if (options.address && options.port) {
     console.info(`\Server source was set to ${options.source}`)
     console.info(`\Server index was set to ${options.index}`)
   }
-
-  const server = spawn('node', ['./dist/server.js'], { env: { ...process.env, SERVER_PORT: options.port, SERVER_ADDRESS: options.address, SERVER_SOURCE: options.source, SERVER_VERBOSE: options.verbose, SERVER_INDEX: options.index } })
+  const cwd = path.join(__dirname, '..', '/dist/server.js')
+  const server = spawn('node', [cwd], { env: { ...process.env, SERVER_PORT: options.port, SERVER_ADDRESS: options.address, SERVER_SOURCE: options.source, SERVER_VERBOSE: options.verbose, SERVER_INDEX: options.index } })
 
   server.stdout.on('data', function(data) {
-      console.log(data.toString());
+      console.log(data.toString())
     })
   server.stderr.on('data', function(data) {
-    console.log(data.toString());
+    console.log(data.toString())
   })
   server.on('exit', function(code) {
-    console.log('child process exited with code ' + code.toString());
+    console.log('child process exited with code ' + code.toString())
   })
 } else {
   console.log('\Missing params given to NodeJS Server:\n')

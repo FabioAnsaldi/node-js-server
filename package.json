@@ -1,6 +1,6 @@
 {
   "name": "@u0_a103/node-js-server",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "A NodeJS server",
   "main": "dist/server.js",
   "author": "Fabio Ansaldi",
