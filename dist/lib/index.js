@@ -85,10 +85,12 @@ const compileContent = (conten, files = [], base) => {
     });
     return doc.window.document.documentElement.outerHTML;
 };
-const getContentFile = (file, stopIt = false, files = []) => {
+const getContentFile = (file, files = [], status = 200) => {
     const readFile = util.promisify(fs.readFile);
     const extname = path.extname(file.path);
     const contentType = getContentType(extname);
+    console.log('path\t\t', file.path);
+    console.log('status\t\t', status);
     return readFile(file.path, 'utf8')
         .then((response) => {
         let content = response;
@@ -100,44 +102,49 @@ const getContentFile = (file, stopIt = false, files = []) => {
                 resolve({
                     error: '',
                     content: content,
-                    contentType: contentType
+                    contentType: contentType,
+                    statusCode: status
                 });
             }
             catch (e) {
                 reject({
                     error: e,
                     content: 'error occurred',
-                    contentType: contentType
+                    contentType: contentType,
+                    statusCode: status
                 });
             }
         });
     })
         .catch((e) => {
+        console.log('err [0]\t', e);
         try {
             let filesInFolder = [];
             let content = '';
-            if (e.code === 'ENOENT' && stopIt === false) {
+            if (e.code === 'ENOENT') {
                 const html = path.join(__dirname, '..', '/template/404.html');
-                return getContentFile({ path: html, base: file.base }, true);
+                return getContentFile({ path: html, base: file.base }, [], 404);
             }
             if (e.code === 'EISDIR') {
                 const html = path.join(__dirname, '..', '/template/root.html');
                 filesInFolder = getFiles(file.path);
-                return getContentFile({ path: html, base: file.base }, false, filesInFolder);
+                return getContentFile({ path: html, base: file.base }, filesInFolder);
             }
             return new Promise((resolve, reject) => {
                 if (e.error) {
                     reject({
                         error: e.error,
                         content: content,
-                        contentType: contentType
+                        contentType: contentType,
+                        statusCode: 500
                     });
                 }
                 else {
                     resolve({
                         error: e.code,
                         content: content,
-                        contentType: contentType
+                        contentType: contentType,
+                        statusCode: 500
                     });
                 }
             });
@@ -147,7 +154,8 @@ const getContentFile = (file, stopIt = false, files = []) => {
                 reject({
                     error: e,
                     content: null,
-                    contentType: contentType
+                    contentType: contentType,
+                    statusCode: 500
                 });
             });
         }

@@ -21,6 +21,7 @@ interface HtmlRespone {
 interface Response {
   error: number | string
   content: string
+  statusCode: number
 }
 
 const server = http.createServer((req: HtmlRRequest, res: HtmlRespone) => {
@@ -37,14 +38,14 @@ const server = http.createServer((req: HtmlRRequest, res: HtmlRespone) => {
       if (verbose) {
         console.info(`\Getting content: ${response.content.slice(0, 50)}`)
       }
-      res.statusCode = 200
+      res.statusCode = response.statusCode
       res.setHeader('Content-Type', response.contentType)
       res.end(response.content)
     }).catch((response: Response) => {
       if (verbose) {
         console.info(`\Getting error: ${response.error}`)
       }
-      res.statusCode = 200
+      res.statusCode = response.statusCode
       res.setHeader('Content-Type', response.contentType)
       res.end(`Ops!<br /><br />${response.error}`)
     })

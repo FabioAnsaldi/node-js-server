@@ -98,10 +98,12 @@ interface FilePath {
   base: string
 }
 
-const getContentFile = (file: FilePath, files: string[] = []): Response => {
+const getContentFile = (file: FilePath, files: string[] = [], status: number = 200): Response => {
   const readFile = util.promisify(fs.readFile)
   const extname = path.extname(file.path)
   const contentType = getContentType(extname)
+  console.log('path\t\t', file.path)
+  console.log('status\t\t', status)
 
   return readFile(file.path, 'utf8')
     .then((response: string) => {
@@ -114,24 +116,27 @@ const getContentFile = (file: FilePath, files: string[] = []): Response => {
           resolve({
             error: '',
             content: content,
-            contentType: contentType
+            contentType: contentType,
+            statusCode: status
           })
         } catch (e) {
           reject({
             error: e,
             content: 'error occurred',
-            contentType: contentType
+            contentType: contentType,
+            statusCode: status
           })
         }
       })
     })
     .catch((e: { code: string, error: object }) => {
+      console.log('err [0]\t', e)
       try {
         let filesInFolder: string[] = []
         let content = ''
         if (e.code === 'ENOENT') {
           const html = path.join(__dirname, '..', '/template/404.html')
-          return getContentFile({ path: html, base: file.base })
+          return getContentFile({ path: html, base: file.base }, [], 404)
         }
         if (e.code === 'EISDIR') {
           const html = path.join(__dirname, '..', '/template/root.html')
@@ -143,13 +148,15 @@ const getContentFile = (file: FilePath, files: string[] = []): Response => {
             reject({
               error: e.error,
               content: content,
-              contentType: contentType
+              contentType: contentType,
+              statusCode: 500
             })
           } else {
             resolve({
               error: e.code,
               content: content,
-              contentType: contentType
+              contentType: contentType,
+              statusCode: 500
             })
           }
         })
@@ -158,7 +165,8 @@ const getContentFile = (file: FilePath, files: string[] = []): Response => {
           reject({
             error: e,
             content: null,
-            contentType: contentType
+            contentType: contentType,
+            statusCode: 500
           })
         })
       }

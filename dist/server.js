@@ -7,7 +7,11 @@ const port = process.env.SERVER_PORT || 4321;
 const source = process.env.SERVER_SOURCE || '';
 const verbose = (process.env.SERVER_VERBOSE && process.env.SERVER_VERBOSE === 'true') || false;
 const server = http.createServer((req, res) => {
-    let filePath = lib.buildPath('.', source, req.url, index);
+    let fileName = '';
+    if (req.url === '/') {
+        fileName = index;
+    }
+    let filePath = lib.buildPath('.', source, req.url, fileName);
     if (verbose) {
         console.info(`\Searching filePath: ${filePath}`);
     }
@@ -16,14 +20,14 @@ const server = http.createServer((req, res) => {
         if (verbose) {
             console.info(`\Getting content: ${response.content.slice(0, 50)}`);
         }
-        res.statusCode = 200;
+        res.statusCode = response.statusCode;
         res.setHeader('Content-Type', response.contentType);
         res.end(response.content);
     }).catch((response) => {
         if (verbose) {
             console.info(`\Getting error: ${response.error}`);
         }
-        res.statusCode = 200;
+        res.statusCode = response.statusCode;
         res.setHeader('Content-Type', response.contentType);
         res.end(`Ops!<br /><br />${response.error}`);
     });
