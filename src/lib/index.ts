@@ -102,8 +102,6 @@ const getContentFile = (file: FilePath, files: string[] = [], status: number = 2
   const readFile = util.promisify(fs.readFile)
   const extname = path.extname(file.path)
   const contentType = getContentType(extname)
-  console.log('path\t\t', file.path)
-  console.log('status\t\t', status)
 
   return readFile(file.path, 'utf8')
     .then((response: string) => {
@@ -130,7 +128,6 @@ const getContentFile = (file: FilePath, files: string[] = [], status: number = 2
       })
     })
     .catch((e: { code: string, error: object }) => {
-      console.log('err [0]\t', e)
       try {
         let filesInFolder: string[] = []
         let content = ''
